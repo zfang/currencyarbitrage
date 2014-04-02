@@ -12,6 +12,8 @@
 
 using namespace std;
 
+//#define TEST_BASE_CASE
+
 vector<string> tokenize(string str) {
     // use stream iterators to copy the stream to the vector as
     // whitespace separated strings
@@ -37,21 +39,21 @@ void populate_graph( Directed_weighted_graph<string> & graph ) {
 
 int main() {
    Directed_weighted_graph<string> graph;
+#ifdef TEST_BASE_CASE
+   string currencies[] = {"EUR", "USD", "GBP"};
+   graph.add_vertex(currencies[0]);
+   graph.add_vertex(currencies[1]);
+   graph.add_vertex(currencies[2]);
+   graph.add_edge(currencies[0], currencies[1], -log(1.1837));
+   graph.add_edge(currencies[1], currencies[0], -log(1/1.1837));
+   graph.add_edge(currencies[0], currencies[2], -log(0.7231));
+   graph.add_edge(currencies[2], currencies[0], -log(1/0.7231));
+   graph.add_edge(currencies[2], currencies[1], -log(1.6388));
+   graph.add_edge(currencies[1], currencies[2], -log(1/1.6388));
+   cout << graph << endl;
+#else
    populate_graph(graph);
-   /*
-      string currencies[] = {"EUR", "USD", "GBP"};
-      graph.add_vertex(currencies[0]);
-      graph.add_vertex(currencies[1]);
-      graph.add_vertex(currencies[2]);
-      graph.add_edge(currencies[0], currencies[1], -log(1.1837));
-      graph.add_edge(currencies[1], currencies[0], -log(1/1.1837));
-      graph.add_edge(currencies[0], currencies[2], -log(0.7231));
-      graph.add_edge(currencies[2], currencies[0], -log(1/0.7231));
-      graph.add_edge(currencies[2], currencies[1], -log(1.6388));
-      graph.add_edge(currencies[1], currencies[2], -log(1/1.6388));
-      cout << graph << endl;
-   */
-   //cout << graph << endl;
+#endif
    string src = "USD";
    Bellman_Ford_algorithms<string> algo (graph);
    for (auto &d : algo.find_shortest_paths_and_negative_cycles(src)) {
@@ -59,6 +61,5 @@ int main() {
          cout << s << " ";
       cout << endl;
    }
-   //cout << algo << endl;
    return 0;
 }
