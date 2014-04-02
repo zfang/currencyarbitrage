@@ -1,7 +1,7 @@
 RM = rm -f
 
 CCX = clang++
-CFLAGS = -O2 -std=c++11 -Ijsoncpp/include
+CFLAGS = -O2 -std=c++11
 
 SRCDIR = src
 OBJDIR = obj
@@ -28,4 +28,4 @@ clean:
 	$(RM) -r bin
 	$(RM) -r obj
 
-.PHONY: all tar clean
+.PHONY: all clean
