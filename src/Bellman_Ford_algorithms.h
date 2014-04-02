@@ -11,7 +11,6 @@ using namespace std;
 template <typename Type>
 class Bellman_Ford_algorithms {
    private:
-      static const double INF;
       Directed_weighted_graph<Type> const &graph;
       unordered_map<Type, Type> predecessors;
       unordered_map<Type, double> distances;
@@ -21,9 +20,6 @@ class Bellman_Ford_algorithms {
       template <typename T>
       friend ostream &operator<<( ostream &, Bellman_Ford_algorithms<T> const & );
 };
-
-template <typename Type>
-const double Bellman_Ford_algorithms<Type>::INF = std::numeric_limits<double>::infinity();
 
 template <typename Type>
 Bellman_Ford_algorithms<Type>::Bellman_Ford_algorithms( Directed_weighted_graph<Type> const & g ) : graph(g) {
