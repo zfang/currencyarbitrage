@@ -10,13 +10,14 @@ def getJson(line):
    queue.put(json.load(u))
    u.close()
 
-pool = Pool()
-with open(sys.argv[1], 'r') as f:
-   for line in f:
-      pool.apply_async(getJson, (line,))
+queries = None
 
-pool.close()
-pool.join()
+with open(sys.argv[1], 'r') as f:
+   queries = [line for line in f]
+
+pool = Pool(len(queries))
+
+pool.map(getJson, queries)
 
 while not queue.empty():
    obj = queue.get()

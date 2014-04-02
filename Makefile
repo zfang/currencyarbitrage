@@ -1,6 +1,6 @@
 RM = rm -f
 
-CCX = clang++
+CCX = g++
 CFLAGS = -O2 -std=c++11
 
 SRCDIR = src
