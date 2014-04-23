@@ -12,8 +12,6 @@
 
 using namespace std;
 
-//#define TEST_BASE_CASE
-
 vector<string> tokenize(string str) {
     // use stream iterators to copy the stream to the vector as
     // whitespace separated strings

@@ -1,7 +1,8 @@
 RM = rm -f
 
 CCX = g++
-CFLAGS = -O2 -std=c++11
+CFLAGS = -O2 -std=c++11 \
+			#-DTEST_BASE_CASE
 
 SRCDIR = src
 OBJDIR = obj
