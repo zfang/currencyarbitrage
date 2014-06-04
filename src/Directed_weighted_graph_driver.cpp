@@ -1,5 +1,5 @@
-#include "Directed_weighted_graph.h"
-#include "Bellman_Ford_algorithms.h"
+#include "Directed_weighted_graph.hpp"
+#include "Bellman_Ford_algorithms.hpp"
 
 #include <string>
 #include <vector>
@@ -52,7 +52,8 @@ int main() {
 #else
    populate_graph(graph);
 #endif
-   string src = "USD";
+   //string src = "USD";
+   string src;
    Bellman_Ford_algorithms<string> algo (graph);
    for (auto &d : algo.find_shortest_paths_and_negative_cycles(src)) {
       for (auto &s : d)

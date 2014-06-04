@@ -14,12 +14,16 @@ class Bellman_Ford_algorithms {
       Directed_weighted_graph<Type> const &graph;
       unordered_map<Type, Type> predecessors;
       unordered_map<Type, double> distances;
+      static const Type empty_node;
    public:
       Bellman_Ford_algorithms( Directed_weighted_graph<Type> const & );
-      vector<deque<Type> > find_shortest_paths_and_negative_cycles( Type & = Type() );
+      vector<deque<Type> > find_shortest_paths_and_negative_cycles( Type const & = empty_node );
       template <typename T>
       friend ostream &operator<<( ostream &, Bellman_Ford_algorithms<T> const & );
 };
+
+template <typename Type>
+const Type Bellman_Ford_algorithms<Type>::empty_node = Type();
 
 template <typename Type>
 Bellman_Ford_algorithms<Type>::Bellman_Ford_algorithms( Directed_weighted_graph<Type> const & g ) : graph(g) {
@@ -27,7 +31,7 @@ Bellman_Ford_algorithms<Type>::Bellman_Ford_algorithms( Directed_weighted_graph<
 }
 
 template <typename Type>
-vector<deque<Type> > Bellman_Ford_algorithms<Type>::find_shortest_paths_and_negative_cycles( Type & source ) {
+vector<deque<Type> > Bellman_Ford_algorithms<Type>::find_shortest_paths_and_negative_cycles( Type const & source ) {
    vector<deque<Type> > negative_cycles;
 
    for (auto &i : graph.graph)
@@ -56,7 +60,7 @@ vector<deque<Type> > Bellman_Ford_algorithms<Type>::find_shortest_paths_and_nega
             cycle.push_back(u.first);
 
             if (source == Type()) {
-               for (Type vertex = u.first; predecessors[vertex] != u.first; vertex = predecessors[vertex], cycle.push_back(vertex))
+               for (Type vertex = u.first; predecessors[vertex] != u.first; vertex = predecessors[vertex], cycle.push_back(vertex));
                negative_cycles.push_back(cycle);
             }
 

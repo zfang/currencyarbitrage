@@ -8,9 +8,9 @@ SRCDIR = src
 OBJDIR = obj
 BINDIR = bin
 
-FILES = Directed_weighted_graph.h Bellman_Ford_algorithms.h
+FILES = Directed_weighted_graph.hpp Bellman_Ford_algorithms.hpp
 
-DEPS = $(FILES:%.h=$(SRCDIR)/%.h)
+DEPS = $(FILES:%.hpp=$(SRCDIR)/%.hpp)
 SOURCES = $(wildcard $(SRCDIR)/*.cpp)
 OBJECTS = $(SOURCES:$(SRCDIR)/%.cpp=$(OBJDIR)/%.o)
 EXEC = $(BINDIR)/driver
