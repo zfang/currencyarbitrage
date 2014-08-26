@@ -34,13 +34,13 @@ template <typename Type>
 vector<deque<Type> > Bellman_Ford_algorithms<Type>::find_shortest_paths_and_negative_cycles( Type const & source ) {
    vector<deque<Type> > negative_cycles;
 
-   for (auto &i : graph.graph)
+   for (auto &i : graph)
       distances[i.first] = 0;
    predecessors.clear();
 
    for (ssize_t i(graph.size()-2); i >= 0; --i) {
       bool relaxed = false;
-      for (auto &u : graph.graph)
+      for (auto &u : graph)
          for (auto &v : u.second) {
             double d = distances[u.first] + v.second;
             if (d < distances[v.first]) {
@@ -53,13 +53,13 @@ vector<deque<Type> > Bellman_Ford_algorithms<Type>::find_shortest_paths_and_nega
          break;
    }
 
-   for (const auto &u : graph.graph)
+   for (const auto &u : graph)
       for (const auto &v : u.second)
          if (distances[u.first] + v.second < distances[v.first]) {
             deque<Type> cycle;
             cycle.push_back(u.first);
 
-            if (source == Type()) {
+            if (source == empty_node) {
                for (Type vertex = u.first; predecessors[vertex] != u.first; vertex = predecessors[vertex], cycle.push_back(vertex));
                negative_cycles.push_back(cycle);
             }

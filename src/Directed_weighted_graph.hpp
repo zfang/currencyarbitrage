@@ -4,6 +4,7 @@
 #include <unordered_map>
 #include <iostream>
 #include <limits>
+#include <iterator>
 
 using namespace std;
 
@@ -13,18 +14,45 @@ class Bellman_Ford_algorithms;
 
 template <typename Type>
 class Directed_weighted_graph {
+   using graph_map = unordered_map<Type, unordered_map<Type, double>>;
    private:
-      unordered_map<Type, unordered_map<Type, double>> graph;
+      graph_map graph;
    public:
       int size() const;
       int degree( Type & ) const;
       bool add_edge( Type &, Type &, double );
       bool add_vertex( Type & );
+
+      typename graph_map::iterator begin() noexcept;
+      typename graph_map::const_iterator begin() const noexcept;
+      typename graph_map::iterator end() noexcept;
+      typename graph_map::const_iterator end() const noexcept;
+
       // Friends
       template <typename T>
       friend ostream &operator<<( ostream &, Directed_weighted_graph<T> const & );
       friend class Bellman_Ford_algorithms<Type>;
 };
+
+template <typename Type>
+typename Directed_weighted_graph<Type>::graph_map::iterator Directed_weighted_graph<Type>::begin() noexcept {
+   return graph.begin();
+}
+
+template <typename Type>
+typename Directed_weighted_graph<Type>::graph_map::const_iterator Directed_weighted_graph<Type>::begin() const noexcept {
+   return graph.begin();
+}
+
+template <typename Type>
+typename Directed_weighted_graph<Type>::graph_map::iterator Directed_weighted_graph<Type>::end() noexcept {
+   return graph.end();
+}
+
+template <typename Type>
+typename Directed_weighted_graph<Type>::graph_map::const_iterator Directed_weighted_graph<Type>::end() const noexcept {
+   return graph.end();
+}
 
 template <typename Type>
 int Directed_weighted_graph<Type>::size() const {

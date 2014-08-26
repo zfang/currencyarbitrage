@@ -52,8 +52,8 @@ int main() {
 #else
    populate_graph(graph);
 #endif
-   //string src = "USD";
    string src;
+   //src = "USD";
    Bellman_Ford_algorithms<string> algo (graph);
    for (auto &d : algo.find_shortest_paths_and_negative_cycles(src)) {
       for (auto &s : d)
