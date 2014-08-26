@@ -35,6 +35,7 @@ vector<deque<Type> > Bellman_Ford_algorithms<Type>::find_shortest_paths_and_nega
    vector<deque<Type> > negative_cycles;
 
    for (auto &i : graph)
+      // Add an auxiliary edge to each vertex
       distances[i.first] = 0;
    predecessors.clear();
 
