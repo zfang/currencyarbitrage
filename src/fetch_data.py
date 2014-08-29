@@ -15,7 +15,7 @@ queries = None
 with open(sys.argv[1], 'r') as f:
    queries = [line for line in f]
 
-pool = Pool(len(queries))
+pool = Pool()
 
 pool.map(getJson, queries)
 
