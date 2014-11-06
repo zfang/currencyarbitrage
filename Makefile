@@ -1,6 +1,6 @@
 RM = rm -f
 
-CCX = g++
+CCX = clang++
 CFLAGS = -O2 -std=c++11 \
 			#-DTEST_BASE_CASE
 

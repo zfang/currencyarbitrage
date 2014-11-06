@@ -19,9 +19,10 @@ class Directed_weighted_graph {
       graph_map graph;
    public:
       int size() const;
-      int degree( Type & ) const;
-      bool add_edge( Type &, Type &, double );
-      bool add_vertex( Type & );
+      int degree( const Type & ) const;
+      bool add_edge( const Type &, const Type &, double );
+      bool add_vertex( const Type & );
+      double weight( const Type &, const Type & );
 
       typename graph_map::iterator begin() noexcept;
       typename graph_map::const_iterator begin() const noexcept;
@@ -60,13 +61,13 @@ int Directed_weighted_graph<Type>::size() const {
 }
 
 template <typename Type>
-int Directed_weighted_graph<Type>::degree( Type &n ) const {
+int Directed_weighted_graph<Type>::degree( const Type &n ) const {
    auto iter = graph.find(n);
    return iter == graph.end() ? -1 : iter->second.size();
 }
 
 template <typename Type>
-bool Directed_weighted_graph<Type>::add_vertex( Type &n ) {
+bool Directed_weighted_graph<Type>::add_vertex( const Type &n ) {
    if (graph.count(n))
       return false;
    graph[n] = unordered_map<Type, double>();
@@ -74,11 +75,16 @@ bool Directed_weighted_graph<Type>::add_vertex( Type &n ) {
 }
 
 template <typename Type>
-bool Directed_weighted_graph<Type>::add_edge( Type &n, Type &m, double w ) {
+bool Directed_weighted_graph<Type>::add_edge( const Type &n, const Type &m, double w ) {
    if (!graph.count(n) || !graph.count(m))
       return false;
    graph[n][m] = w;
    return true;
+}
+
+template <typename Type>
+double Directed_weighted_graph<Type>::weight( const Type &n, const Type &m ) {
+   return !graph.count(n) || !graph.count(m) ? numeric_limits<double>::infinity() : graph[n][m];
 }
 
 template <typename T>
