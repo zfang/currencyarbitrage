@@ -1,6 +1,7 @@
 {
 	"AUD": "Australian Dollar",
 	"BRL": "Brazilian Real",
+	"BTC": "Bitcoin",
 	"CAD": "Canadian Dollar",
 	"CHF": "Swiss Franc",
 	"CNY": "Chinese Yuan",
@@ -18,5 +19,8 @@
 	"SEK": "Swedish Krona",
 	"SGD": "Singapore Dollar",
 	"TRY": "Turkish Lira",
-	"USD": "United States Dollar"
+	"USD": "United States Dollar",
+	"XAG": "Silver (troy ounce)",
+	"XAU": "Gold (troy ounce)",
+	"ZAR": "South African Rand"
 }

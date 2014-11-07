@@ -30,12 +30,14 @@ void populate_graph(Directed_weighted_graph<string> & graph ) {
       tokenize(line, tokens);
       if (tokens.size() < 4) continue;
 
+#ifdef ASK
       double ask = atof(tokens[2].c_str());
       if (ask) {
          graph.add_vertex(tokens[1]);
          graph.add_vertex(tokens[0]);
          graph.add_edge(tokens[1], tokens[0], log(ask));
       }
+#endif
 
       double bid = atof(tokens[3].c_str());
       if (bid) {
@@ -112,7 +114,7 @@ int main(int argc, char* args[]) {
          cout << "\t" << to << ": " << currencies_root[to];
 
       cout << "Sequence:" << endl;
-      cout << "\t" << cycle << cycle.front() << ": " <<  rate << endl;
+      cout << "\t" << cycle << cycle.front() << ": " <<  rate << endl << endl;
    }
    return 0;
 }
