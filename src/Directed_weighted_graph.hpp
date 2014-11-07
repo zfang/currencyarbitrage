@@ -22,7 +22,7 @@ class Directed_weighted_graph {
       int degree( const Type & ) const;
       bool add_edge( const Type &, const Type &, double );
       bool add_vertex( const Type & );
-      double weight( const Type &, const Type & );
+      double weight( const Type &, const Type & ) const;
 
       typename graph_map::iterator begin() noexcept;
       typename graph_map::const_iterator begin() const noexcept;
@@ -83,8 +83,15 @@ bool Directed_weighted_graph<Type>::add_edge( const Type &n, const Type &m, doub
 }
 
 template <typename Type>
-double Directed_weighted_graph<Type>::weight( const Type &n, const Type &m ) {
-   return !graph.count(n) || !graph.count(m) ? numeric_limits<double>::infinity() : graph[n][m];
+double Directed_weighted_graph<Type>::weight( const Type &n, const Type &m ) const {
+   typename graph_map::const_iterator iter = graph.find(n);
+   if (iter == graph.end())
+      return numeric_limits<double>::infinity();
+   typename unordered_map<Type, double>::const_iterator iter2 = iter->second.find(m);
+   if (iter2 == iter->second.end())
+      return numeric_limits<double>::infinity();
+
+   return iter2->second;
 }
 
 template <typename T>

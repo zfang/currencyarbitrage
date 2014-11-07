@@ -39,7 +39,7 @@ void Bellman_Ford_algorithms<Type>::find_shortest_paths_and_negative_cycles( Dir
       bool relaxed = false;
       for (auto &u : graph)
          for (auto &v : u.second) {
-            double d = distances[u.first] + v.second;
+            double d = distances[u.first] + graph.weight(u.first, v.first);
             if (d < distances[v.first]) {
                relaxed = true;
                distances[v.first] = d;
@@ -52,7 +52,7 @@ void Bellman_Ford_algorithms<Type>::find_shortest_paths_and_negative_cycles( Dir
 
    for (const auto &u : graph)
       for (const auto &v : u.second)
-         if (distances[u.first] + v.second < distances[v.first]) {
+         if (distances[u.first] + graph.weight(u.first, v.first) < distances[v.first]) {
             Cycle<Type> cycle;
             Type vertex;
             for (vertex = v.first; !cycle.contains(vertex); cycle.push_back(vertex), vertex = predecessors[vertex]);

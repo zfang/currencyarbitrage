@@ -8,21 +8,27 @@ LDFLAGS = -L$(PREFIX)/lib -ljsoncpp
 SRCDIR = src
 OBJDIR = obj
 BINDIR = bin
+LIBDIR = lib
 
 FILES = Directed_weighted_graph.hpp Bellman_Ford_algorithms.hpp
 
 DEPS = $(FILES:%.hpp=$(SRCDIR)/%.hpp)
 SOURCES = $(wildcard $(SRCDIR)/*.cpp)
-OBJECTS = $(SOURCES:$(SRCDIR)/%.cpp=$(OBJDIR)/%.o)
 EXEC = $(BINDIR)/driver
+LIB = $(LIBDIR)/libcurrenciesarbitrage.so
 
 all: $(EXEC)
+lib: $(LIB)
 
-$(EXEC): $(OBJECTS)
+$(EXEC): $(OBJDIR)/main.o
 	@mkdir -p $(BINDIR)
 	$(CCX) $(CFLAGS) $^ $(LDFLAGS) -o $@ 
 
-$(OBJDIR)/%.o: $(SRCDIR)/%.cpp $(DEPS)
+$(LIB):
+	@mkdir -p $(LIBDIR)
+	$(CCX) -fPIC $(CFLAGS) $(SRCDIR)/lib.cpp $(LDFLAGS) -shared -o $@
+
+$(OBJDIR)/main.o: $(SRCDIR)/main.cpp $(DEPS)
 	@mkdir -p $(OBJDIR)
 	$(CCX) $(CFLAGS) -c $< -o $@ 
 
