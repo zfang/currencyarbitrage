@@ -1,5 +1,5 @@
-#ifndef DIRECTED_WEIGHTED_GRAPH_H
-#define DIRECTED_WEIGHTED_GRAPH_H
+#ifndef DIRECTED_WEIGHTED_GRAPH_HPP
+#define DIRECTED_WEIGHTED_GRAPH_HPP
 
 #include <unordered_map>
 #include <iostream>
@@ -84,10 +84,10 @@ bool Directed_weighted_graph<Type>::add_edge( const Type &n, const Type &m, doub
 
 template <typename Type>
 double Directed_weighted_graph<Type>::weight( const Type &n, const Type &m ) const {
-   typename graph_map::const_iterator iter = graph.find(n);
+   auto iter = graph.find(n);
    if (iter == graph.end())
       return numeric_limits<double>::infinity();
-   typename unordered_map<Type, double>::const_iterator iter2 = iter->second.find(m);
+   auto iter2 = iter->second.find(m);
    if (iter2 == iter->second.end())
       return numeric_limits<double>::infinity();
 

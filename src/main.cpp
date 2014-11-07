@@ -1,27 +1,16 @@
-#include "Directed_weighted_graph.hpp"
-#include "Bellman_Ford_algorithms.hpp"
-
+#include "common.hpp"
 #include <string>
 #include <vector>
-#include <cmath>
 #include <fstream>
 #include <iostream>
-#include <sstream>
-#include <iterator>
 #include <stdlib.h>
+#include <getopt.h>
 #include <json/json.h>
 #include <linux/limits.h>
 
 using namespace std;
 
-void tokenize(string str, vector<string>& tokens) {
-   // use stream iterators to copy the stream to the vector as
-   // whitespace separated strings
-   stringstream strstr(str);
-   tokens = vector<string> (istream_iterator<string> (strstr), istream_iterator<string>());
-}
-
-void populate_graph(Directed_weighted_graph<string> & graph ) {
+void populateGraph(Directed_weighted_graph<string> & graph, double flotationCostInPercentage) {
    string line;
    while (!cin.eof()) {
       getline(cin, line);
@@ -31,38 +20,15 @@ void populate_graph(Directed_weighted_graph<string> & graph ) {
       if (tokens.size() < 4) continue;
 
 #ifdef ASK
-      double ask = atof(tokens[2].c_str());
-      if (ask) {
-         graph.add_vertex(tokens[1]);
-         graph.add_vertex(tokens[0]);
-         graph.add_edge(tokens[1], tokens[0], log(ask));
-      }
+      setAskRate(graph, tokens[0], tokens[1], atof(tokens[2].c_str()), flotationCostInPercentage);
 #endif
 
-      double bid = atof(tokens[3].c_str());
-      if (bid) {
-         graph.add_vertex(tokens[0]);
-         graph.add_vertex(tokens[1]);
-         graph.add_edge(tokens[0], tokens[1], -log(bid));
-      }
+      setBidRate(graph, tokens[0], tokens[1], atof(tokens[3].c_str()), flotationCostInPercentage);
    }
 }
 
 template<typename Type>
-double get_rate(Directed_weighted_graph<Type>& graph, Cycle<Type>& cycle) {
-   string from = cycle.front();
-   double rate = 1;
-   for (auto &to : cycle) {
-      if (to == from) continue;
-      rate *= exp(-graph.weight(from, to));
-      from = to;
-   }
-
-   return rate * exp(-graph.weight(from, cycle.front()));
-}
-
-template<typename Type>
-void print_rates(Directed_weighted_graph<Type>& graph, Cycle<Type>& cycle) {
+void printRates(Directed_weighted_graph<Type>& graph, Cycle<Type>& cycle) {
    string from = cycle.front();
    for (auto &to : cycle) {
       if (to == from) continue;
@@ -79,9 +45,18 @@ int main(int argc, char* args[]) {
    realpath(args[0], current_path);
    string path(current_path);
    path = path.substr(0, path.rfind('/')+1);
-   ifstream currencies_file(path + "../src/currencies.json");
+   ifstream currencies_file(path + "../src/currencies.all.json");
    Json::Value currencies_root;
    Json::Reader().parse(currencies_file, currencies_root);
+
+   double flotationCostInPercentage = 0;
+   int c;
+   while ((c = getopt (argc, args, "f:")) != -1)
+      switch (c) {
+         case 'f':
+            flotationCostInPercentage = atof(optarg);
+            break;
+      }
 
    Directed_weighted_graph<string> graph;
 #ifdef TEST_BASE_CASE
@@ -97,18 +72,18 @@ int main(int argc, char* args[]) {
    graph.add_edge(currencies[1], currencies[2], -log(1/1.6388));
    cout << graph << endl;
 #else
-   populate_graph(graph);
+   populateGraph(graph, flotationCostInPercentage);
 #endif
    vector<Cycle<string> > cycles;
    Bellman_Ford_algorithms<string>().find_shortest_paths_and_negative_cycles(graph, cycles);
    for (auto &cycle : cycles) {
-      double rate = get_rate(graph, cycle);
+      double rate = getRate(graph, cycle);
       if (rate < 1)
          cycle.reverse();
       cycle.adjust_by_source("USD");
-      rate = get_rate(graph, cycle);
+      rate = getRate(graph, cycle);
       cout << "Rates:" << endl;
-      print_rates(graph, cycle);
+      printRates(graph, cycle);
       cout << "Names:" << endl;
       for (auto &to : cycle)
          cout << "\t" << to << ": " << currencies_root[to];

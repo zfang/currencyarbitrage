@@ -1,12 +1,14 @@
-#ifndef BELLMAN_FORD_ALGORITHMS_H
-#define BELLMAN_FORD_ALGORITHMS_H
+#ifndef BELLMAN_FORD_ALGORITHMS_HPP
+#define BELLMAN_FORD_ALGORITHMS_HPP
 
 #include <algorithm>
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
 #include <iostream>
+#include <future>
 #include "Cycle.hpp"
+#include "common.hpp"
 
 using namespace std;
 
@@ -44,19 +46,31 @@ void Bellman_Ford_algorithms<Type>::find_shortest_paths_and_negative_cycles( Dir
       if (!relaxed)
          break;
    }
+   
+   vector<future<shared_ptr<Cycle<Type> > > > futures;
 
    for (const auto &u : graph)
       for (const auto &v : u.second)
-         if (distances[u.first] + graph.weight(u.first, v.first) < distances[v.first]) {
-            Cycle<Type> cycle;
-            Type vertex;
-            for (vertex = v.first; !cycle.contains(vertex); cycle.push_back(vertex), vertex = predecessors[vertex]);
-            for (; *cycle.begin() != vertex; cycle.pop_front());
+         if (distances[u.first] + graph.weight(u.first, v.first) < distances[v.first])
+            futures.push_back(async(
+#ifdef ASYNC
+                     launch::async, 
+#else
+                     launch::deferred, 
+#endif
+                     [&] () -> shared_ptr<Cycle<Type>> {
+                        Type vertex = v.first;
+                        shared_ptr<Cycle<Type>> ptr (new Cycle<Type>);
+                        for (; !ptr->contains(vertex); ptr->push_back(vertex), vertex = predecessors[vertex]);
+                        for (; *ptr->begin() != vertex; ptr->pop_front());
 
-            negative_cycles.insert(cycle);
-         }
+                        return ptr;
+                     }));
 
-   for (auto &c : negative_cycles)
+   for (auto &f : futures)
+      negative_cycles.insert(*f.get());
+
+   for (const auto &c : negative_cycles)
       cycles.push_back(c);
 }
 
