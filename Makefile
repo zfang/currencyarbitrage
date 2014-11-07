@@ -33,7 +33,8 @@ $(OBJDIR)/main.o: $(SRCDIR)/main.cpp $(DEPS)
 	$(CCX) $(CFLAGS) -c $< -o $@ 
 
 clean:
-	$(RM) -r bin
-	$(RM) -r obj
+	$(RM) -r $(BINDIR) 
+	$(RM) -r $(OBJDIR)
+	$(RM) -r $(LIBDIR)
 
 .PHONY: all clean
