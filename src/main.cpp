@@ -15,8 +15,8 @@
 using namespace std;
 
 void tokenize(string str, vector<string>& tokens) {
-    // use stream iterators to copy the stream to the vector as
-    // whitespace separated strings
+   // use stream iterators to copy the stream to the vector as
+   // whitespace separated strings
    stringstream strstr(str);
    tokens = vector<string> (istream_iterator<string> (strstr), istream_iterator<string>());
 }
@@ -28,17 +28,21 @@ void populate_graph(Directed_weighted_graph<string> & graph ) {
       //cout << line << endl;
       vector<string> tokens;
       tokenize(line, tokens);
-      if (tokens.size() < 3) continue;
+      if (tokens.size() < 4) continue;
 
-      double rate = atof(tokens[2].c_str());
-      if (!rate) continue;
+      double ask = atof(tokens[2].c_str());
+      if (ask) {
+         graph.add_vertex(tokens[1]);
+         graph.add_vertex(tokens[0]);
+         graph.add_edge(tokens[1], tokens[0], log(ask));
+      }
 
-      double weight = -log(rate);
-
-      graph.add_vertex(tokens[0]);
-      graph.add_vertex(tokens[1]);
-      graph.add_edge(tokens[0], tokens[1], weight);
-      graph.add_edge(tokens[1], tokens[0], -weight);
+      double bid = atof(tokens[3].c_str());
+      if (bid) {
+         graph.add_vertex(tokens[0]);
+         graph.add_vertex(tokens[1]);
+         graph.add_edge(tokens[0], tokens[1], -log(bid));
+      }
    }
 }
 
@@ -99,6 +103,7 @@ int main(int argc, char* args[]) {
       double rate = get_rate(graph, cycle);
       if (rate < 1)
          cycle.reverse();
+      cycle.adjust_by_source("USD");
       rate = get_rate(graph, cycle);
       cout << "Rates:" << endl;
       print_rates(graph, cycle);
@@ -107,7 +112,7 @@ int main(int argc, char* args[]) {
          cout << "\t" << to << ": " << currencies_root[to];
 
       cout << "Sequence:" << endl;
-      cout << "\t" << cycle << ": " <<  rate << endl;
+      cout << "\t" << cycle << cycle.front() << ": " <<  rate << endl;
    }
    return 0;
 }

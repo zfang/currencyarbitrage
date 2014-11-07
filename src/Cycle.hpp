@@ -27,6 +27,7 @@ class Cycle {
    private:
       cycle_list cycle;
       unordered_set<Type> vertex_set;
+      static const Type empty_node;
    public:
       int size() const;
       void push_back(const Type&);
@@ -44,6 +45,9 @@ class Cycle {
       template <typename T>
       friend ostream &operator<<( ostream &, Directed_weighted_graph<T> const & );
 };
+
+template <typename Type>
+const Type Cycle<Type>::empty_node = Type();
 
 template<typename Type>
 bool operator==(const Cycle<Type>& left, const Cycle<Type>& right) {

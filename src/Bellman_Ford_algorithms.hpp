@@ -13,21 +13,16 @@ using namespace std;
 template <typename Type>
 class Bellman_Ford_algorithms {
    private:
-      ;
       unordered_map<Type, Type> predecessors;
       unordered_map<Type, double> distances;
-      static const Type empty_node;
    public:
-      void find_shortest_paths_and_negative_cycles( Directed_weighted_graph<Type> const &, vector<Cycle<Type> > & cycles, Type const & = empty_node );
+      void find_shortest_paths_and_negative_cycles( Directed_weighted_graph<Type> const &, vector<Cycle<Type> > & cycles );
       template <typename T>
       friend ostream &operator<<( ostream &, Bellman_Ford_algorithms<T> const & );
 };
 
 template <typename Type>
-const Type Bellman_Ford_algorithms<Type>::empty_node = Type();
-
-template <typename Type>
-void Bellman_Ford_algorithms<Type>::find_shortest_paths_and_negative_cycles( Directed_weighted_graph<Type> const &graph, vector<Cycle<Type> > & cycles, Type const & source ) {
+void Bellman_Ford_algorithms<Type>::find_shortest_paths_and_negative_cycles( Directed_weighted_graph<Type> const &graph, vector<Cycle<Type> > & cycles ) {
    unordered_set<Cycle<Type>, cycle_hash<Type> > negative_cycles;
 
    for (auto &i : graph)
@@ -58,7 +53,6 @@ void Bellman_Ford_algorithms<Type>::find_shortest_paths_and_negative_cycles( Dir
             for (vertex = v.first; !cycle.contains(vertex); cycle.push_back(vertex), vertex = predecessors[vertex]);
             for (; *cycle.begin() != vertex; cycle.pop_front());
 
-            cycle.adjust_by_source(source);
             negative_cycles.insert(cycle);
          }
 
