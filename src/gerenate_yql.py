@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-import json
+import json, math
 
 l = [ x for x in json.load(open('currencies.json', 'r')).iterkeys() ]
 
@@ -14,7 +14,7 @@ for i in xrange(1, n):
 
 m = len(pairs)
 
-limit = 200
+limit = int(math.ceil(m/math.ceil(m/200.0)))
 queries = []
 
 for i in xrange(0, m, limit):
