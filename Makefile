@@ -1,8 +1,9 @@
 RM = rm -f
 
-CCX = clang++
+CCX = g++
 CFLAGS = -O2 -std=c++11 \
 			#-DTEST_BASE_CASE
+LDFLAGS = -L$(PREFIX)/lib -ljsoncpp
 
 SRCDIR = src
 OBJDIR = obj
@@ -19,7 +20,7 @@ all: $(EXEC)
 
 $(EXEC): $(OBJECTS)
 	@mkdir -p $(BINDIR)
-	$(CCX) $(CFLAGS) $^ -o $@ 
+	$(CCX) $(CFLAGS) $^ $(LDFLAGS) -o $@ 
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.cpp $(DEPS)
 	@mkdir -p $(OBJDIR)

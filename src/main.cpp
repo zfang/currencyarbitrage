@@ -9,6 +9,8 @@
 #include <sstream>
 #include <iterator>
 #include <stdlib.h>
+#include <json/json.h>
+#include <linux/limits.h>
 
 using namespace std;
 
@@ -58,14 +60,23 @@ void print_rates(Directed_weighted_graph<Type>& graph, Cycle<Type>& cycle) {
    string from = cycle.front();
    for (auto &to : cycle) {
       if (to == from) continue;
-      cout << from << " " << to << " " << exp(-graph.weight(from, to)) << endl;
+      cout << "\t" << from << " " << to << " " << exp(-graph.weight(from, to)) << endl;
       from = to;
    }
 
-   cout << from << " " << cycle.front() << " " << exp(-graph.weight(from, cycle.front())) << endl;
+   cout << "\t" << from << " " << cycle.front() << " " << exp(-graph.weight(from, cycle.front())) << endl;
 }
 
-int main() {
+int main(int argc, char* args[]) {
+   // Get the currencies json file
+   char current_path[PATH_MAX];
+   realpath(args[0], current_path);
+   string path(current_path);
+   path = path.substr(0, path.rfind('/')+1);
+   ifstream currencies_file(path + "../src/currencies.json");
+   Json::Value currencies_root;
+   Json::Reader().parse(currencies_file, currencies_root);
+
    Directed_weighted_graph<string> graph;
 #ifdef TEST_BASE_CASE
    string currencies[] = {"EUR", "USD", "GBP"};
@@ -82,15 +93,20 @@ int main() {
 #else
    populate_graph(graph);
 #endif
-   string src;
    vector<Cycle<string> > cycles;
-   Bellman_Ford_algorithms<string>().find_shortest_paths_and_negative_cycles(graph, cycles, src);
+   Bellman_Ford_algorithms<string>().find_shortest_paths_and_negative_cycles(graph, cycles);
    for (auto &cycle : cycles) {
       double rate = get_rate(graph, cycle);
       if (rate < 1)
          cycle.reverse();
       rate = get_rate(graph, cycle);
+      cout << "Rates:" << endl;
       print_rates(graph, cycle);
+      cout << "Names:" << endl;
+      for (auto &to : cycle)
+         cout << "\t" << to << ": " << currencies_root[to];
+
+      cout << "Sequence:" << endl;
       cout << "\t" << cycle << ": " <<  rate << endl;
    }
    return 0;
