@@ -9,7 +9,7 @@ void setAskRate(Directed_weighted_graph<string> & graph, const string &from, con
    if (ask) {
       graph.add_vertex(to);
       graph.add_vertex(from);
-      graph.add_edge(to, from, log(ask * (1 - flotationCostInPercentage/100)));
+      graph.add_edge(to, from, log(ask * (1 + flotationCostInPercentage/100)));
    }
 }
 
