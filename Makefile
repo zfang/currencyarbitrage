@@ -1,9 +1,9 @@
 RM = rm -f
 
 CCX = g++
-CFLAGS = -O3 -std=c++11 -pthread \
-			#-DTEST_BASE_CASE
-LDFLAGS = -L$(PREFIX)/lib -ljsoncpp
+CFLAGS = -O3 -std=c++11 \
+			-DSET_ASK_RATE
+LDFLAGS = -L$(PREFIX)/lib -pthread -lcurl -ljsoncpp
 
 SRCDIR = src
 OBJDIR = obj
@@ -23,7 +23,7 @@ lib: $(LIB)
 
 $(EXEC): $(OBJECTS)
 	@mkdir -p $(BINDIR)
-	$(CCX) $(CFLAGS) $^ $(LDFLAGS) -o $@ 
+	$(CCX) $(CFLAGS) $^ $(LDFLAGS) -o $@
 
 $(LIB): $(OBJECTS)
 	@mkdir -p $(LIBDIR)
@@ -31,10 +31,10 @@ $(LIB): $(OBJECTS)
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.cpp $(DEPS)
 	@mkdir -p $(OBJDIR)
-	$(CCX) -fPIC $(CFLAGS) -c $< -o $@ 
+	$(CCX) -fPIC $(CFLAGS) -c $< -o $@
 
 clean:
-	$(RM) -r $(BINDIR) 
+	$(RM) -r $(BINDIR)
 	$(RM) -r $(OBJDIR)
 	$(RM) -r $(LIBDIR)
 

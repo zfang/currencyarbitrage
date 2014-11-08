@@ -1,9 +1,6 @@
 #ifndef COMMON_HPP
 #define COMMON_HPP
 
-#include <cmath>
-#include <sstream>
-#include <iterator>
 #include <vector>
 #include <string>
 #include <unordered_map>
@@ -19,5 +16,7 @@ void setBidRate(Directed_weighted_graph<string>&, const string&, const string&, 
 void tokenize(const string &str, vector<string>& tokens);
 
 double getRate(const Directed_weighted_graph<string>&, const Cycle<string>&);
+
+string downloadJSON(const string&);
 
 #endif

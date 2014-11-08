@@ -46,17 +46,17 @@ void Bellman_Ford_algorithms<Type>::find_shortest_paths_and_negative_cycles( Dir
       if (!relaxed)
          break;
    }
-   
+
    vector<future<shared_ptr<Cycle<Type> > > > futures;
 
    for (const auto &u : graph)
       for (const auto &v : u.second)
          if (distances[u.first] + graph.weight(u.first, v.first) < distances[v.first])
             futures.push_back(async(
-#ifdef ASYNC
-                     launch::async, 
+#ifdef GET_CYCLES_ASYNC
+                     launch::async,
 #else
-                     launch::deferred, 
+                     launch::deferred,
 #endif
                      [&] () -> shared_ptr<Cycle<Type>> {
                         Type vertex = v.first;

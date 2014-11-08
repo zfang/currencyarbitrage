@@ -3,6 +3,7 @@
 #include <vector>
 #include <fstream>
 #include <iostream>
+#include <future>
 #include <stdlib.h>
 #include <getopt.h>
 #include <json/json.h>
@@ -12,18 +13,25 @@ using namespace std;
 
 void populateGraph(Directed_weighted_graph<string> & graph, double flotationCostInPercentage) {
    string line;
+   vector<future<string> > futures;
    while (!cin.eof()) {
       getline(cin, line);
-      //cout << line << endl;
-      vector<string> tokens;
-      tokenize(line, tokens);
-      if (tokens.size() < 4) continue;
+      futures.push_back(async(launch::async, downloadJSON, line));
+   }
 
-#ifdef ASK
-      setAskRate(graph, tokens[0], tokens[1], atof(tokens[2].c_str()), flotationCostInPercentage);
+   Json::Reader reader;
+   for (auto &f : futures) {
+      Json::Value root;
+      reader.parse(f.get(), root, false);
+      for (auto &rate : root["query"]["results"]["rate"])
+      {
+         string from = rate["id"].asString().substr(0, 3);
+         string to = rate["id"].asString().substr(3);
+#ifdef SET_ASK_RATE
+         setAskRate(graph, from, to, atof(rate["Ask"].asCString()), flotationCostInPercentage);
 #endif
-
-      setBidRate(graph, tokens[0], tokens[1], atof(tokens[3].c_str()), flotationCostInPercentage);
+         setBidRate(graph, from, to, atof(rate["Bid"].asCString()), flotationCostInPercentage);
+      }
    }
 }
 
@@ -47,7 +55,7 @@ int main(int argc, char* args[]) {
    path = path.substr(0, path.rfind('/')+1);
    ifstream currencies_file(path + "../src/currencies.all.json");
    Json::Value currencies_root;
-   Json::Reader().parse(currencies_file, currencies_root);
+   Json::Reader().parse(currencies_file, currencies_root, false);
 
    double flotationCostInPercentage = 0;
    int c;
@@ -59,21 +67,7 @@ int main(int argc, char* args[]) {
       }
 
    Directed_weighted_graph<string> graph;
-#ifdef TEST_BASE_CASE
-   string currencies[] = {"EUR", "USD", "GBP"};
-   graph.add_vertex(currencies[0]);
-   graph.add_vertex(currencies[1]);
-   graph.add_vertex(currencies[2]);
-   graph.add_edge(currencies[0], currencies[1], -log(1.1837));
-   graph.add_edge(currencies[1], currencies[0], -log(1/1.1837));
-   graph.add_edge(currencies[0], currencies[2], -log(0.7231));
-   graph.add_edge(currencies[2], currencies[0], -log(1/0.7231));
-   graph.add_edge(currencies[2], currencies[1], -log(1.6388));
-   graph.add_edge(currencies[1], currencies[2], -log(1/1.6388));
-   cout << graph << endl;
-#else
    populateGraph(graph, flotationCostInPercentage);
-#endif
    vector<Cycle<string> > cycles;
    Bellman_Ford_algorithms<string>().find_shortest_paths_and_negative_cycles(graph, cycles);
    for (auto &cycle : cycles) {
