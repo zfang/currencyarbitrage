@@ -1,9 +1,9 @@
 RM = rm -f
 
 CCX = g++
-CFLAGS = -O3 -std=c++11 \
+CFLAGS = -Ofast -std=c++11 \
 			-DSET_ASK_RATE
-LDFLAGS = -L$(PREFIX)/lib -pthread -lcurl -ljsoncpp
+LDFLAGS = -pthread -lcurl -ljsoncpp
 
 SRCDIR = src
 OBJDIR = obj

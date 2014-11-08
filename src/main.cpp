@@ -50,7 +50,11 @@ void printRates(Directed_weighted_graph<Type>& graph, Cycle<Type>& cycle) {
 int main(int argc, char* args[]) {
    // Get the currencies json file
    char current_path[PATH_MAX];
-   realpath(args[0], current_path);
+   if (!realpath(args[0], current_path)) {
+      cerr << "Failed to get the absolute path of currencies.all.json" << endl;
+      return -1;
+   }
+
    string path(current_path);
    path = path.substr(0, path.rfind('/')+1);
    ifstream currencies_file(path + "../src/currencies.all.json");
