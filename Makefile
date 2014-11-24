@@ -2,7 +2,7 @@ RM = rm -f
 
 CCX = g++
 CFLAGS = -Ofast -std=c++11 \
-			-DSET_ASK_RATE
+			-DSET_BID_RATE
 LDFLAGS = -pthread -lcurl -ljsoncpp
 
 SRCDIR = src

@@ -7,17 +7,17 @@
 
 void setAskRate(Directed_weighted_graph<string> & graph, const string &from, const string &to, double ask, double flotationCostInPercentage) {
    if (ask) {
-      graph.add_vertex(to);
       graph.add_vertex(from);
-      graph.add_edge(to, from, log(ask * (1 + flotationCostInPercentage/100)));
+      graph.add_vertex(to);
+      graph.add_edge(from, to, -log(ask * (1 - flotationCostInPercentage/100)));
    }
 }
 
 void setBidRate(Directed_weighted_graph<string> & graph, const string &from, const string &to, double bid, double flotationCostInPercentage) {
    if (bid) {
-      graph.add_vertex(from);
       graph.add_vertex(to);
-      graph.add_edge(from, to, -log(bid * (1 - flotationCostInPercentage/100)));
+      graph.add_vertex(from);
+      graph.add_edge(to, from, log(bid * (1 + flotationCostInPercentage/100)));
    }
 }
 

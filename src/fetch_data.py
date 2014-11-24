@@ -16,4 +16,4 @@ results = [ pool.apply_async(getJson, [line]) for line in fileinput.input() ]
 for result in results:
    obj = result.get()
    for i in obj['query']['results']['rate']:
-      print i['id'][:3], i['id'][3:], i['Ask'], i['Bid']
+      print i['id'][:3], i['id'][3:], i['Rate'], i['Ask'], i['Bid']
