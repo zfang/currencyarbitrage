@@ -27,10 +27,11 @@ void populateGraph(Directed_weighted_graph<string> & graph, double flotationCost
       {
          string from = rate["id"].asString().substr(0, 3);
          string to = rate["id"].asString().substr(3);
+
+         setAskRate(graph, from, to, atof(rate["Ask"].asCString()), flotationCostInPercentage);
 #ifdef SET_BID_RATE
          setBidRate(graph, from, to, atof(rate["Bid"].asCString()), flotationCostInPercentage);
 #endif
-         setAskRate(graph, from, to, atof(rate["Ask"].asCString()), flotationCostInPercentage);
       }
    }
 }
